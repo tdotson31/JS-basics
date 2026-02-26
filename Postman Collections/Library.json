@@ -1,0 +1,151 @@
+{
+	"info": {
+		"_postman_id": "76c216b6-ce90-4d9c-bfec-e2b3a51ba48e",
+		"name": "Library",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "addbook",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"id": "c4c8acc4-0157-4de9-ab7b-9ee7cb5cafb7",
+						"exec": [
+							"// Fixed errors in test scripts\r",
+							"const jsonData = pm.response.json();\r",
+							"pm.test(\"Validate Status Code is 200\", function() {\r",
+							"    pm.response.to.have.status(200);\r",
+							"    pm.expect(jsonData).to.have.property(\"Msg\");\r",
+							"    pm.expect(jsonData.Msg).to.eql(\"successfully added\");\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Header cookies responstime validation\", function() {\r",
+							"    pm.response.to.have.header(\"Content-Type\");\r",
+							"    pm.expect(pm.response.headers.get(\"Content-Type\")).to.eql(\"application/json;charset=UTF-8\");\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(2000);\r",
+							"    pm.expect(pm.response.text()).to.include(\"successfully added\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "e9039c75-5361-4023-bc78-49f5c1150bd7",
+						"exec": [
+							"//RS45464\r",
+							"// gives access to all global variables and gets \"companyCode\"\r",
+							"// Remember to SAVE the variable in global \r",
+							"console.log(pm.globals.get(\"companyCode\")); \r",
+							"// store the global variable in a constant \r",
+							"const code = pm.globals.get(\"companyCode\");\r",
+							"// use an appropriate dynamic variable from the Postman; in this case, $randomInt\r",
+							"const val = pm.variables.replaceIn('{{$randomInt}}');\r",
+							"// create the \"isbn\" variable in LiBrary collection environment \r",
+							"//Concatenate the constants; in this instance, place in the collection level\r",
+							"pm.collectionVariables.set(\"isbn\",code + val);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"id": "9a04a430-2e4e-4396-a1f3-6c00265ef251",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\"name\":\"Learn Appium Automation with Java\",\n//\"isbn\" variable set on collection level has value passed from the concatenation in the pre-request script\n\"isbn\":\"{{isbn}}\",\n\"aisle\":\"2529857\",\n\"author\":\"John foe\"\n}\n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/Library/Addbook.php"
+			},
+			"response": []
+		},
+		{
+			"name": "getbook",
+			"id": "52089e3d-331e-4c44-942a-2b7cba39170f",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Accept",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\n\"name\":\"Learn Appium Automation with Java\",\n\"isbn\":\"bcd\",\n\"aisle\":\"227\",\n\"author\":\"John foe\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://rahulshettyacademy.com/Library/GetBook.php?ID=blob227",
+					"protocol": "https",
+					"host": [
+						"rahulshettyacademy",
+						"com"
+					],
+					"path": [
+						"Library",
+						"GetBook.php"
+					],
+					"query": [
+						{
+							"key": "ID",
+							"value": "blob227"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "deletebook",
+			"id": "9c187ab8-7bb4-46ae-9dff-e006ebb3df05",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n \n\"ID\" : \"bcd227\"\n \n} \n",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "{{base_url}}/Library/DeleteBook.php"
+			},
+			"response": []
+		}
+	],
+	"variable": [
+		{
+			"key": "isbn",
+			"value": ""
+		}
+	]
+}
